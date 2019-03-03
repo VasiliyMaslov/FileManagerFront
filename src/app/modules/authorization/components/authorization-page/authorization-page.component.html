@@ -1,0 +1,9 @@
+<div class="container">
+  <input matInput type="number" [(ngModel)]="id">
+
+  <!--<mat-checkbox>1</mat-checkbox>-->
+
+  <button mat-raised-button (click)="getUser(id)">Выбрать юзера</button>
+
+  <div style="margin-top: 20px">{{ user }}</div>
+</div>
