@@ -7,11 +7,6 @@ import {Observable, of} from 'rxjs';
 export class HandlersService {
 
   constructor() { }
-
-  // private log(message: string) {
-  //   this.messageService.add(`HeroService: ${message}`);
-  // }
-
   /**
    * Handle Http operation that failed.
    * Let the app continue.
