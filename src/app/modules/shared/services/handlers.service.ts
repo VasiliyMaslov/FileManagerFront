@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
+import {AuthService} from './auth.service';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HandlersService {
 
-  constructor(private messageService: MessageService) { }
+  constructor(private messageService: MessageService,
+              private router: Router) { }
 
   log(message: string) {
     this.messageService.add(`MessageService: ${message}`);
@@ -27,6 +30,11 @@ export class HandlersService {
 
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
+
+      if (error.status === 401 || error.status === 403) {
+        localStorage.removeItem('user');
+        this.router.navigateByUrl('/auth/login');
+      }
 
       // Let the app keep running by returning an empty result.
       return of(result as T);
