@@ -1,11 +1,5 @@
 <div class="container mt-3 h-100">
-  <div class="d-flex justify-content-end" *ngIf="!loggedIn(); else loggedOut">
-    <button mat-raised-button color="primary" class="mr-3" routerLink="./login">Войти</button>
-    <button mat-raised-button color="primary" routerLink="./register">Регистрация</button>
-  </div>
-  <ng-template #loggedOut>
-    <button mat-raised-button color="primary" class="mr-3">Выйти</button>
-  </ng-template>
+  <app-head-bar></app-head-bar>
   <div class="row d-flex justify-content-center align-items-center h-75">
   <div class="w-50">
     <router-outlet></router-outlet>

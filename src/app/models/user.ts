@@ -5,6 +5,7 @@ export class User {
     public secondName?: string,
     public login?: string,
     public password?: string,
-    public passwordHash?: string
+    public passwordHash?: string,
+    public token?: string
   ) {}
 }

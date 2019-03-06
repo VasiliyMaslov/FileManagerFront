@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {User} from '../../../../models/user';
 import {UserService} from '../../../shared/services/user.service';
 import {AuthService} from '../../../shared/services/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -14,7 +15,8 @@ export class RegistrationComponent implements OnInit {
   public user = new User();
   public checkPass: string;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private router: Router) { }
 
   ngOnInit() {
   }
@@ -26,7 +28,7 @@ export class RegistrationComponent implements OnInit {
         .subscribe(
           (res: User) => {
             if (res) {
-              console.log(res);
+              this.router.navigateByUrl('/store');
             }
           },
           (err: any) => console.warn(err)

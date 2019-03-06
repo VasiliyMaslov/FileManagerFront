@@ -4,6 +4,7 @@ import { Urls } from '../../../models/url';
 import { catchError, tap } from 'rxjs/operators';
 import { User } from '../../../models/user';
 import { HandlersService } from './handlers.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,15 @@ import { HandlersService } from './handlers.service';
 export class AuthService {
 
   constructor(private httpClient: HttpClient,
-              private handlers: HandlersService) { }
+              private handlers: HandlersService,
+              private router: Router) { }
 
   login(user: User) {
-    return this.httpClient.post<{access_token: string}>(Urls.authenticate, user)
+    return this.httpClient.post<User>(Urls.authenticate, user)
       .pipe(
-        tap(res => {
+        tap((res: User) => {
           this.handlers.log(`authenticate user id=${user.userId}`);
-          localStorage.setItem('access_token', res.access_token);
+          localStorage.setItem('user', JSON.stringify({userId: res.userId, login: res.login, token: res.token}));
         }),
         catchError(this.handlers.handleError<User>(`authenticate id${user.userId}`))
       );
@@ -36,10 +38,11 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    this.router.navigateByUrl('/auth');
   }
 
   public get loggedIn(): boolean {
-    return localStorage.getItem('access_token');
+    return !!localStorage.getItem('user');
   }
 }
