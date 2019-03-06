@@ -23,7 +23,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(user)
       .subscribe(
         (res: any) => {
-         this.router.navigateByUrl('/store');
+          if (this.authService.loggedIn) {
+            this.router.navigateByUrl('/store');
+          } else {
+            console.log('Авторизация не удалась');
+          }
         },
         (err: any) => console.log(err)
       );

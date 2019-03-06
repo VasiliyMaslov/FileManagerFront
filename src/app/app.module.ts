@@ -7,6 +7,8 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
 import { JwtModule } from '@auth0/angular-jwt';
 import {AuthService} from './modules/shared/services/auth.service';
 import {UserStoreModule} from './modules/user-store/user-store.module';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {AuthInterceptor} from './modules/shared/interceptors/auth';
 @NgModule({
   declarations: [
     AppComponent
@@ -27,7 +29,13 @@ import {UserStoreModule} from './modules/user-store/user-store.module';
       }
     })
   ],
-  providers: [ AuthService ],
+  providers: [
+    AuthService, {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

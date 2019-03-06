@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
+  user: User;
+
   constructor(private httpClient: HttpClient,
               private handlers: HandlersService,
               private router: Router) { }
@@ -18,18 +20,20 @@ export class AuthService {
   login(user: User) {
     return this.httpClient.post<User>(Urls.authenticate, user)
       .pipe(
-        tap((res: User) => {
-          this.handlers.log(`authenticate user id=${user.userId}`);
-          localStorage.setItem('user', JSON.stringify({userId: res.userId, login: res.login, token: res.token}));
+        tap(
+          (res: User) => {
+            this.handlers.log(`authenticate user id=${user.userId}`);
+            localStorage.setItem('user', JSON.stringify({userId: res.userId, login: res.login, token: res.token}));
+            this.user = res;
         }),
         catchError(this.handlers.handleError<User>(`authenticate id${user.userId}`))
       );
   }
 
   register(user: User) {
-    return this.httpClient.post<{access_token: string}>(Urls.register, user)
+    return this.httpClient.post<User>(Urls.register, user)
       .pipe(
-        tap(res => {
+        tap((res) => {
           this.handlers.log(`register user id=${user.userId}`);
           this.login(user);
         }),
@@ -40,6 +44,10 @@ export class AuthService {
   logout() {
     localStorage.removeItem('user');
     this.router.navigateByUrl('/auth');
+  }
+
+  public get User(): User {
+    return this.user;
   }
 
   public get loggedIn(): boolean {

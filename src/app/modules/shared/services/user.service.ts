@@ -27,6 +27,7 @@ export class UserService {
   }
 
   getUserById(id: number): Observable<User> {
+    console.log(id);
     const url = Urls.accounts + '/' + id;
     return this.http.get<User>(url)
       .pipe(

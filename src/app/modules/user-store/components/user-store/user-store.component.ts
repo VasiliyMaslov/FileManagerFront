@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {UserService} from '../../../shared/services/user.service';
+import {User} from '../../../../models/user';
 
 @Component({
   selector: 'app-user-store',
@@ -7,9 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserStoreComponent implements OnInit {
 
-  constructor() { }
+  user = new User();
+
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+    this.getUser(JSON.parse(localStorage.getItem('user')).userId);
+  }
+
+  getUser(id: number = 1) {
+    this.userService.getUserById(id)
+      .subscribe(
+        (res: any) => {
+          this.user = res;
+        }
+      );
   }
 
 }

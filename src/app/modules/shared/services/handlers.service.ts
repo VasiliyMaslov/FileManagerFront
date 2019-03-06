@@ -10,7 +10,7 @@ export class HandlersService {
   constructor(private messageService: MessageService) { }
 
   log(message: string) {
-    this.messageService.add(`UserService: ${message}`);
+    this.messageService.add(`MessageService: ${message}`);
   }
 
   /**
