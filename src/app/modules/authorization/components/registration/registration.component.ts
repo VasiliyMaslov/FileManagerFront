@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {User} from '../../../../models/user';
 import {UserService} from '../../../shared/services/user.service';
+import {AuthService} from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-registration',
@@ -13,7 +14,7 @@ export class RegistrationComponent implements OnInit {
   public user = new User();
   public checkPass: string;
 
-  constructor(private userService: UserService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
   }
@@ -21,7 +22,7 @@ export class RegistrationComponent implements OnInit {
   register() {
     console.log(this.user);
     if (this.user.password === this.checkPass) {
-      this.userService.register(this.user)
+      this.authService.register(this.user)
         .subscribe(
           (res: User) => {
             if (res) {

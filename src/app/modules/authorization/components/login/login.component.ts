@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../../models/user';
 import { UserService } from '../../../shared/services/user.service';
+import {AuthService} from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,30 +13,17 @@ export class LoginComponent implements OnInit {
   public id: number;
   public user = new User();
 
-  constructor(private userService: UserService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
   }
 
   auth(user: User) {
-    this.userService.authenticate(user)
+    this.authService.login(user)
       .subscribe(
         (res: any) => {
           console.log(res);
         }
       );
   }
-
-  getUser(id: number = 2) {
-    this.userService.getUserById(id)
-      .subscribe(
-        (res: User) => {
-          if (res) {
-            console.log(res);
-          }
-        },
-        (error => console.log(error))
-      );
-  }
-
 }
