@@ -8,7 +8,7 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (this.authService.loggedIn) {
-      const authHeader = JSON.parse(localStorage.getItem('user')).token || {};
+      const authHeader = localStorage.getItem('access_token') || {};
 
       const authReq = req.clone({
         headers: req.headers.append('Authorization', 'Bearer ' + authHeader)

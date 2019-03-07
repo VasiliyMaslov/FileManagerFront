@@ -1,21 +1,28 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Urls } from '../../../models/url';
 import { catchError, tap } from 'rxjs/operators';
 import { User } from '../../../models/user';
 import { HandlersService } from './handlers.service';
 import { Router } from '@angular/router';
+import { UserService } from './user.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { AccessToken } from '../../../models/accessToken';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnInit {
 
   user: User;
 
   constructor(private httpClient: HttpClient,
               private handlers: HandlersService,
-              private router: Router) { }
+              private router: Router,
+              private userService: UserService,
+              private helper: JwtHelperService) {}
+
+  ngOnInit(): void {}
 
   login(user: User) {
     return this.httpClient.post<User>(Urls.authenticate, user)
@@ -23,10 +30,10 @@ export class AuthService {
         tap(
           (res: User) => {
             this.handlers.log(`authenticate user id=${user.userId}`);
-            localStorage.setItem('user', JSON.stringify({userId: res.userId, login: res.login, token: res.token}));
             this.user = res;
+            localStorage.setItem('access_token', res.token);
         }),
-        catchError(this.handlers.handleError<User>(`authenticate id${user.userId}`))
+        catchError(this.handlers.handleError<User>(`authenticate id ${user.userId}`))
       );
   }
 
@@ -42,15 +49,26 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('user');
-    this.router.navigateByUrl('/auth');
+    this.user = new User();
+    localStorage.removeItem('access_token');
+    this.router.navigate(['/auth']);
   }
 
-  public get User(): User {
-    return this.user;
+  public get activeUser(): User {
+    let user: User;
+    this.userService.getUserById(this.accessToken.unique_name)
+      .subscribe(
+        (res: User) => user = res,
+        (err: any) => this.handlers.handleError<User>(`getUserById id= ${user.userId}`)
+      );
+    return user;
+  }
+
+  public get accessToken(): AccessToken {
+    return this.helper.decodeToken(localStorage.getItem('access_token'));
   }
 
   public get loggedIn(): boolean {
-    return !!localStorage.getItem('user');
+    return !!localStorage.getItem('access_token');
   }
 }

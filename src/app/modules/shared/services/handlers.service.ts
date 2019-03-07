@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
+import {User} from '../../../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,6 @@ export class HandlersService {
       console.log(`${operation} failed: ${error.message}`);
 
       if (error.status === 401 || error.status === 403) {
-        localStorage.removeItem('user');
         this.router.navigateByUrl('/auth/login');
       }
 
