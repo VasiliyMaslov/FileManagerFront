@@ -33,7 +33,8 @@ export class HandlersService {
       console.log(`${operation} failed: ${error.message}`);
 
       if (error.status === 401 || error.status === 403) {
-        this.router.navigateByUrl('/auth/login');
+        localStorage.removeItem('access_token');
+        this.router.navigate(['auth']);
       }
 
       // Let the app keep running by returning an empty result.
