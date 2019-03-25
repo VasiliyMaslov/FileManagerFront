@@ -1,4 +1,4 @@
-<div class="container mt-3 h-100">
+<nav class="mt-3">
   <div class="d-flex justify-content-end" *ngIf="!authService.loggedIn; else loggedOut">
     <button mat-raised-button color="primary" class="mr-3" routerLink="/auth/login">Войти</button>
     <button mat-raised-button color="primary" routerLink="/auth/register">Регистрация</button>
@@ -8,5 +8,4 @@
       <button mat-raised-button color="primary" class="mr-3" (click)="authService.logout()">Выйти</button>
     </div>
   </ng-template>
-  <router-outlet></router-outlet>
-</div>
+</nav>

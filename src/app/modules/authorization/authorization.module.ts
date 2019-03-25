@@ -6,7 +6,7 @@ import { SharedModule } from '../shared/shared.module';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { LoginComponent } from './components/login/login.component';
 import { RouterModule } from '@angular/router';
-import { HeadBarComponent } from './components/head-bar/head-bar.component';
+import { HeadBarComponent } from '../shared/components/head-bar/head-bar.component';
 import { LoginGuard } from './guards/login.guard';
 
 @NgModule({

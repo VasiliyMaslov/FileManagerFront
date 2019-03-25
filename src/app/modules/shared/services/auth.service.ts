@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AccessToken } from '../../../models/accessToken';
+import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,18 +21,25 @@ export class AuthService implements OnInit {
               private handlers: HandlersService,
               private router: Router,
               private userService: UserService,
-              private helper: JwtHelperService) {}
+              private helper: JwtHelperService,
+              private message: MessageService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   login(user: User) {
+    console.log(user);
     return this.httpClient.post<User>(Urls.authenticate, user)
       .pipe(
         tap(
-          (res: User) => {
-            this.handlers.log(`authenticate user id=${user.userId}`);
-            this.user = res;
-            localStorage.setItem('access_token', res.token);
+          (res: any) => {
+            if (!res.error) {
+              this.handlers.log(`authenticate user id=${user.userId}`);
+              this.user = res;
+              localStorage.setItem('access_token', res.token);
+            } else {
+              this.message.warn(res.error);
+            }
         }),
         catchError(this.handlers.handleError<User>(`authenticate id ${user.userId}`))
       );
@@ -40,9 +48,13 @@ export class AuthService implements OnInit {
   register(user: User) {
     return this.httpClient.post<User>(Urls.register, user)
       .pipe(
-        tap((res) => {
-          this.handlers.log(`register user id=${user.userId}`);
-          this.login(user);
+        tap((res: any) => {
+          if (!res.error) {
+            this.handlers.log(`register user id=${user.userId}`);
+            this.login(user);
+          } else {
+            this.message.warn(res.error);
+          }
         }),
         catchError(this.handlers.handleError<User>(`register id=${user.userId}`))
       );
@@ -56,12 +68,14 @@ export class AuthService implements OnInit {
 
   public get activeUser(): User {
     let user: User;
-    this.userService.getUserById(this.accessToken.unique_name)
-      .subscribe(
-        (res: User) => user = res,
-        (err: any) => this.handlers.handleError<User>(`getUserById id= ${user.userId}`)
-      );
-    return user;
+    if (this.accessToken) {
+      this.userService.getUserById(this.accessToken.unique_name)
+        .subscribe(
+          (res: User) => user = res,
+          (err: any) => this.handlers.handleError<User>(`getUserById id= ${user.userId}`)
+        );
+      return user;
+    }
   }
 
   public get accessToken(): AccessToken {

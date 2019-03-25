@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../../models/user';
 import { AuthService } from '../../../shared/services/auth.service';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
+import { MessageService } from '../../../shared/services/message.service';
+import { HandlersService } from '../../../shared/services/handlers.service';
 
 @Component({
   selector: 'app-login',
@@ -14,22 +16,31 @@ export class LoginComponent implements OnInit {
   public user = new User();
 
   constructor(private authService: AuthService,
-              private router: Router) { }
+              private router: Router,
+              private message: MessageService,
+              private handlers: HandlersService) { }
 
   ngOnInit() {
   }
 
   auth(user: User) {
-    this.authService.login(user)
-      .subscribe(
-        (res: any) => {
-          if (this.authService.loggedIn) {
-            this.router.navigateByUrl('/store');
-          } else {
-            console.log('Авторизация не удалась');
-          }
-        },
-        (err: any) => console.log(err)
-      );
+    console.log(user);
+    if (user.login) {
+      this.authService.login(user)
+        .subscribe(
+          (res: any) => {
+            if (!res.error) {
+              if (this.authService.loggedIn) {
+                this.router.navigate(['store']);
+              } else {
+                this.router.navigate(['auth/login']);
+              }
+            } else {
+              this.message.warn(res.error);
+            }
+          },
+          (err: any) => this.handlers.handleError('auth' + err)
+        );
+    }
   }
 }

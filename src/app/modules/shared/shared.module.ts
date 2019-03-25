@@ -1,20 +1,17 @@
-import {ModuleWithProviders, NgModule} from '@angular/core';
+import { NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from './services/user.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HandlersService } from './services/handlers.service';
-import { MessagesComponent } from './components/messages/messages.component';
-import { MessageService } from './services/message.service';
 import { MaterialModule } from '../material/material.module';
 import { FormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {RouterModule} from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    NotFoundComponent,
-    MessagesComponent
+    NotFoundComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +23,6 @@ import {RouterModule} from '@angular/router';
   ],
   exports: [
     NotFoundComponent,
-    MessagesComponent,
     FormsModule,
     BrowserAnimationsModule,
     RouterModule,
@@ -34,8 +30,7 @@ import {RouterModule} from '@angular/router';
   ],
   providers: [
     UserService,
-    HandlersService,
-    MessageService
+    HandlersService
   ]
 })
 export class SharedModule {}
