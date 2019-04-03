@@ -14,14 +14,10 @@ export class UserService {
   constructor(private http: HttpClient,
               private handlers: HandlersService) { }
 
-  params(type: string, value: any): HttpParams {
-    return new HttpParams().set(type, value.toString());
-  }
-
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(Urls.accounts)
       .pipe(
-      tap(_ => this.handlers.log(`fetched users`)),
+      tap(() => this.handlers.log(`fetched users`)),
       catchError(this.handlers.handleError<User[]>(`getUsers`, []))
       );
   }
@@ -30,7 +26,7 @@ export class UserService {
     const url = Urls.accounts + '/' + id;
     return this.http.get<User>(url)
       .pipe(
-        tap(_ => this.handlers.log(`fetched user id=${id}`)),
+        tap(() => this.handlers.log(`fetched user id=${id}`)),
         catchError(this.handlers.handleError<User>(`getUserById id=${id}`))
       );
   }

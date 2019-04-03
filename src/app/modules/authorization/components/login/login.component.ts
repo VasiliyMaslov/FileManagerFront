@@ -24,11 +24,11 @@ export class LoginComponent implements OnInit {
   }
 
   auth(user: User) {
-    console.log(user);
     if (user.login) {
       this.authService.login(user)
         .subscribe(
           (res: any) => {
+            console.log(res);
             if (!res.error) {
               if (this.authService.loggedIn) {
                 this.router.navigate(['store']);
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
               this.message.warn(res.error);
             }
           },
-          (err: any) => this.handlers.handleError('auth' + err)
+          (err: any) => this.handlers.handleError(err)
         );
     }
   }
