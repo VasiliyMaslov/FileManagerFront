@@ -13,16 +13,22 @@ export class HeadBarComponent implements OnInit {
 
    user: User;
 
-  constructor(private authService: AuthService,
+  constructor(public authService: AuthService,
               private userService: UserService,
               private handlers: HandlersService) { }
 
   ngOnInit() {
-    this.userService.getUserById(this.authService.accessToken.unique_name)
-      .subscribe(
-        (res: any) => this.user = res,
-        (err) => this.handlers.handleError(err)
-      );
+    this.getUser();
+  }
+
+  getUser(): void {
+    if (this.authService.accessToken) {
+      this.userService.getUserById(this.authService.accessToken.unique_name)
+        .subscribe(
+          (res: any) => this.user = res,
+          (err) => this.handlers.handleError(err)
+        );
+    }
   }
 
 }

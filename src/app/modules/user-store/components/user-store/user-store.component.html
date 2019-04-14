@@ -1,6 +1,9 @@
-<div class="container mt-3">
-  <div class="d-flex justify-content-center">
-    Типа хранилище
+<app-storage-bar (action)="onChanged($event)"></app-storage-bar>
+<div class="d-flex row">
+  <app-available-storage class="col-2"></app-available-storage>
+  <div class="d-flex p-2 row col-10 justify-content-start">
+    <ng-container *ngFor="let object of childObjects">
+      <div class="col-4">{{object.objectName}}</div>
+    </ng-container>
   </div>
-  <button mat-raised-button (click)="hyi()">132</button>
 </div>

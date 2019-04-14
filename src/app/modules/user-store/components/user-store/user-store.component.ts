@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../shared/services/user.service';
-import { User } from '../../../../models/user';
+import {Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../shared/services/auth.service';
-import { HandlersService } from '../../../shared/services/handlers.service';
-import {DataService} from '../../../shared/services/data.service';
+import { DataService } from '../../../shared/services/data.service';
 
 @Component({
   selector: 'app-user-store',
@@ -12,20 +9,24 @@ import {DataService} from '../../../shared/services/data.service';
 })
 export class UserStoreComponent implements OnInit {
 
-  user = new User();
+  currentDirectory: Object;
+  childObjects: Array<Object> = [];
 
   constructor(private authService: AuthService,
               private dataService: DataService
              ) { }
 
   ngOnInit() {
-  }
-
-  hyi() {
-    this.dataService.getObject(51)
+    this.dataService.getObject()
       .subscribe(
-        res => console.log(res)
+        (res: Array<Object>) => {
+          this.currentDirectory = res[0];
+          this.childObjects = res.slice(1, res.length);
+        }
       );
   }
 
+  onChanged(event) {
+    console.log(event);
+  }
 }

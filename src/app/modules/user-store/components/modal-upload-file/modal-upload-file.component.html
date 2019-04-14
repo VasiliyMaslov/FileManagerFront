@@ -1,0 +1,22 @@
+<form (ngSubmit)="onSubmit()">
+  <div class="example-2">
+    <div class="form-group">
+      <input type="file" name="file" id="file" class="input-file" multiple (change)="addFile($event)">
+      <label for="file" class="btn btn-tertiary js-labelFile">
+        <i class="icon fa fa-check"></i>
+        <span class="js-fileName">Выбрать файлы для загрузки</span>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <ng-container *ngFor="let file of files;let i = index">
+      <ng-container *ngIf="file">
+        <div class="col-12">
+          <span>{{i}}. </span>
+          <span>{{file.name}}</span>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <button mat-stroked-button type="submit">Загрузить файлы</button>
+</form>

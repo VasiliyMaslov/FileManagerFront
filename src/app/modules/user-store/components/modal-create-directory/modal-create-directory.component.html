@@ -1,0 +1,8 @@
+<form class="d-flex flex-column justify-content-center" #createDirectoryForm="ngForm" (ngSubmit)="onSubmit(createDirectoryForm)">
+  <span class="p-2">Создание папки</span>
+  <mat-form-field class="p-2">
+    <input [(ngModel)]="newDirectory" placeholder="Введите название папки" name="newDirectory" matInput type="text" required minlength="1">
+    <mat-error>Некорректное значение</mat-error>
+  </mat-form-field>
+  <button class="mt-1" type="submit" mat-raised-button color="primary">Создать папку</button>
+</form>

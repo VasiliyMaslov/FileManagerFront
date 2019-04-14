@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
       this.authService.login(user)
         .subscribe(
           (res: any) => {
-            console.log(res);
             if (!res.error) {
               if (this.authService.loggedIn) {
                 this.router.navigate(['store']);

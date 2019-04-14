@@ -8,6 +8,7 @@ import { MaterialModule } from '../material/material.module';
 import { FormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import {MatFileUploadModule} from 'angular-material-fileupload';
 
 @NgModule({
   declarations: [
@@ -19,14 +20,16 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    RouterModule
+    RouterModule,
+    MatFileUploadModule
   ],
   exports: [
     NotFoundComponent,
     FormsModule,
     BrowserAnimationsModule,
     RouterModule,
-    MaterialModule
+    MaterialModule,
+    MatFileUploadModule
   ],
   providers: [
     UserService,

@@ -1,0 +1,18 @@
+<div class="d-flex justify-content-start border-bottom p-2">
+  <button mat-raised-button [matMenuTriggerFor]="menu" color="primary">
+    <i class="fas fa-plus" style="font-size: 30px"></i>
+    Создать
+  </button>
+  <mat-menu #menu="matMenu">
+   <button mat-menu-item (click)="openCreateDirectoryModal()">
+     <mat-icon><i class="fas fa-folder-plus icons"></i></mat-icon>
+     <span>
+      Создать папку
+     </span>
+   </button>
+    <button mat-menu-item (click)="openUploadFileModal()">
+      <mat-icon><i class="fas fa-upload icons"></i></mat-icon>
+      <span>Загрузить файл</span>
+    </button>
+  </mat-menu>
+</div>
