@@ -30,7 +30,6 @@ export class RegistrationComponent implements OnInit {
         this.authService.register(this.user)
           .subscribe(
             (res: any) => {
-              console.log(res);
               if (!res.error) {
                 this.router.navigate(['store']);
               } else {
