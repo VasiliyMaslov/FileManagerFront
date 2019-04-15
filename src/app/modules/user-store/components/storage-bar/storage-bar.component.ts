@@ -158,6 +158,8 @@ export class StorageBarComponent implements OnInit {
         }
       } else if (res.action === 'move_object') {
         this.moveObject();
+      } else if (res.action === 'remove_object' || res.action === 'rename_object') {
+        this.selectedObject = {};
       }
     }
   }
