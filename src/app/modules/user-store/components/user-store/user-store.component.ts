@@ -45,6 +45,7 @@ export class UserStoreComponent implements OnInit {
         const data = res['data'].sort((a, b) => a['level'] - b['level']);
         this.eventService.emitAction({data: data[0], action: 'tree_updated'});
         this.childObjects = data.slice(1, data.length).sort((a, b) => a['type'] - b['type']);
+        this.childObjects['shared'] = true;
       },
         err => this.handlers.handleError(err));
   }

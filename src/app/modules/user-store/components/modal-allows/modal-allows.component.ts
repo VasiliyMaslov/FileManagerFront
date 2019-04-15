@@ -61,7 +61,8 @@ export class ModalAllowsComponent implements OnInit {
         } else {
           this.messageService.warn(res.message);
         }
-      });
+      },
+        err => this.handlers.handleError(err));
   }
 
   onSubmit(form: NgForm) {

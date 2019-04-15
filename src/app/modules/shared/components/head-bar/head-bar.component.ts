@@ -4,6 +4,7 @@ import { User } from '../../../../models/user';
 import {UserService} from '../../services/user.service';
 import {HandlersService} from '../../services/handlers.service';
 import {MessageService} from '../../services/message.service';
+import {EventService} from '../../services/event.service';
 
 @Component({
   selector: 'app-head-bar',
@@ -17,10 +18,12 @@ export class HeadBarComponent implements OnInit {
   constructor(public authService: AuthService,
               private userService: UserService,
               private handlers: HandlersService,
-              private  messageService: MessageService) { }
+              private messageService: MessageService,
+              private eventService: EventService) { }
 
   ngOnInit() {
     this.getUser();
+    this.subscribeForActions();
   }
 
   getUser(): void {
@@ -33,5 +36,16 @@ export class HeadBarComponent implements OnInit {
         }
       },
         err => this.handlers.handleError(err));
+  }
+
+  subscribeForActions() {
+    this.eventService.action
+      .subscribe(res => {
+        if (res) {
+          if (res.action === 'login') {
+            this.getUser();
+          }
+        }
+      });
   }
 }

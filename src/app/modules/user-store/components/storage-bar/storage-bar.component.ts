@@ -109,6 +109,7 @@ export class StorageBarComponent implements OnInit {
   }
 
   openAllowsModal(): void {
+    console.log(this.selectedObject);
     const dialogRef = this.dialog.open(ModalAllowsComponent, {
       data: this.selectedObject,
       minWidth: '50%'

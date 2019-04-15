@@ -11,6 +11,7 @@ import { AccessToken } from '../../../models/accessToken';
 import { MessageService } from './message.service';
 import { throwError } from 'rxjs/internal/observable/throwError';
 import {Observable} from 'rxjs';
+import {EventService} from './event.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,8 @@ export class AuthService {
               private router: Router,
               private userService: UserService,
               private helper: JwtHelperService,
-              private message: MessageService) {}
+              private message: MessageService,
+              private eventService: EventService) {}
 
   currentUser(): Observable<any> {
     return this.httpClient.get(Urls.currentUser);
@@ -39,6 +41,7 @@ export class AuthService {
               localStorage.setItem('access_token', res.token);
               this.handlers.log(`authenticate user id=${user.userId}`);
               this.user = res;
+              this.eventService.emitAction({data: {}, action: 'login'});
             } else {
               this.message.warn(res.message);
             }
@@ -71,6 +74,7 @@ export class AuthService {
   }
 
   logout() {
+    this.eventService.emitAction({data: {}, action: 'logout'});
     this.user = new User();
     localStorage.removeItem('access_token');
     this.router.navigate(['/auth']);
