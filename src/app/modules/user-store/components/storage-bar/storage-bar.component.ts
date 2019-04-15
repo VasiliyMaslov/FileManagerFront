@@ -156,8 +156,6 @@ export class StorageBarComponent implements OnInit {
         } else if (res.data === 'shared') {
           this.area = 'Доступные мне';
         }
-      } else if (res.action === 'move_object') {
-        this.moveObject();
       } else if (res.action === 'remove_object' || res.action === 'rename_object') {
         this.selectedObject = {};
       }
@@ -231,11 +229,18 @@ export class StorageBarComponent implements OnInit {
         res => {
           if (!res.error) {
             this.eventService.emitAction({data: res, action: 'move_object'});
-            this.messageService.warn(res.message);
+            this.messageService.success(res.message);
+            this.moveMode =  false;
+            this.movingObject = {};
           } else {
             this.messageService.warn(res.message);
           }
         }
       );
+  }
+
+  cancelMove() {
+    this.moveMode = false;
+    this.movingObject = {};
   }
 }

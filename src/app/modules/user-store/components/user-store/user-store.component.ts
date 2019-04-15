@@ -4,7 +4,7 @@ import { DataService } from '../../../shared/services/data.service';
 import { ObjectModel } from '../../../../models/object';
 import { EventService } from '../../../shared/services/event.service';
 import { IAction } from '../../../../models/action';
-import {HandlersService} from '../../../shared/services/handlers.service';
+import { HandlersService } from '../../../shared/services/handlers.service';
 
 @Component({
   selector: 'app-user-store',
@@ -30,7 +30,7 @@ export class UserStoreComponent implements OnInit {
     this.dataService.getObject(objectId)
       .subscribe(
         (res: Object) => {
-          const data: Array<Object> = res['data'];
+          const data: Array<Object> = res['data'].sort((a, b) => a['level'] - b['level']);
           this.eventService.emitAction({data: data[0], action: 'tree_updated'});
           this.childObjects = data.slice(1, data.length).sort((a, b) => a['type'] - b['type']);
         },
@@ -42,7 +42,7 @@ export class UserStoreComponent implements OnInit {
     this.dataService.getShared()
       .subscribe(
         res => {
-        const data = res['data'];
+        const data = res['data'].sort((a, b) => a['level'] - b['level']);
         this.eventService.emitAction({data: data[0], action: 'tree_updated'});
         this.childObjects = data.slice(1, data.length).sort((a, b) => a['type'] - b['type']);
       },
@@ -91,6 +91,8 @@ export class UserStoreComponent implements OnInit {
         } else if (res.data === 'shared') {
           this.getShared();
         }
+      } else if (res.action === 'move_object') {
+        this.childObjects.push(res.data['relocated_objects'][0]);
       }
     }
   }

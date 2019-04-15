@@ -47,8 +47,12 @@
        *ngIf="selectedObject['userId'] === currentUser.userId"
        (click)="openAllowsModal()"></i>
   </div>
-  <div (click)="moveObject()" class="d-flex justify-content-end col-3" *ngIf="selectedObject && moveMode">
-    <span>Перемещаемый объект: {{movingObject['objectName']}}</span>
-    <i class="fas fa-check icons d-flex align-items-center"></i>
+  <div class="d-flex justify-content-end col-3" *ngIf="selectedObject && moveMode">
+    <div class="col-8">
+      <span>Перемещаемый объект: {{movingObject['objectName']}}</span>
+      <i (click)="moveObject()" class="col-2 fas fa-check icons d-flex align-items-center cursor-pointer" [matTooltip]="'Подтвердить перемещение'"></i>
+    </div>
+    <i class="col-2 fas fa-times icons d-flex align-items-center cursor-pointer" [matTooltip]="'Отменить перемещение'"
+       (click)="cancelMove()"></i>
   </div>
 </div>

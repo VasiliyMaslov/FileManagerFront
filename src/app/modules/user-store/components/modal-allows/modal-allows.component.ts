@@ -57,7 +57,7 @@ export class ModalAllowsComponent implements OnInit {
       .subscribe(res => {
         if (!res.error) {
           this.objectOwner = res.data[0];
-          this.allowedUsers = res.data.slice(1, res.data.length);
+          this.allowedUsers = res.data.slice(1, res.data.length - 1);
         } else {
           this.messageService.warn(res.message);
         }
