@@ -1,9 +1,13 @@
-<app-storage-bar (action)="onChanged($event)"></app-storage-bar>
+<app-storage-bar></app-storage-bar>
 <div class="d-flex row">
-  <app-available-storage class="col-2"></app-available-storage>
+  <div class="d-flex flex-column col-2">
+    <app-areas class="border-bottom border-right"></app-areas>
+    <app-available-storage class="border-right"></app-available-storage>
+  </div>
   <div class="d-flex p-2 row col-10 justify-content-start">
     <ng-container *ngFor="let object of childObjects">
-      <div class="col-4">{{object.objectName}}</div>
+      <app-object-card (click)="selectObject(object)" class="col-sm-12 col-md-6 col-xl-4" [object]="object"
+                       [selectedObject]="selectedObject"></app-object-card>
     </ng-container>
   </div>
 </div>

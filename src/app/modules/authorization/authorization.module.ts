@@ -6,24 +6,19 @@ import { SharedModule } from '../shared/shared.module';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { LoginComponent } from './components/login/login.component';
 import { RouterModule } from '@angular/router';
-import { HeadBarComponent } from '../shared/components/head-bar/head-bar.component';
 import { LoginGuard } from './guards/login.guard';
 
 @NgModule({
   declarations: [
     AuthorizationPageComponent,
     RegistrationComponent,
-    LoginComponent,
-    HeadBarComponent
+    LoginComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     SharedModule,
     RouterModule
-  ],
-  exports: [
-    HeadBarComponent
   ],
   providers: [
     LoginGuard

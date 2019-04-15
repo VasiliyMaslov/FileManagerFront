@@ -1,9 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { DataService } from '../../../shared/services/data.service';
 import { HandlersService } from '../../../shared/services/handlers.service';
 import { NgForm} from '@angular/forms';
-import {MessageService} from '../../../shared/services/message.service';
-import {MatDialogRef} from '@angular/material';
+import { MessageService} from '../../../shared/services/message.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { EventService } from '../../../shared/services/event.service';
+import { ObjectModel } from '../../../../models/object';
 
 @Component({
   selector: 'app-modal-create-directory',
@@ -12,25 +14,21 @@ import {MatDialogRef} from '@angular/material';
 })
 export class ModalCreateDirectoryComponent implements OnInit {
 
-  private currentDirectory: Object;
   public newDirectory: string;
 
   constructor(private dataService: DataService,
               private handlers: HandlersService,
               private messageService: MessageService,
-              public dialogRef: MatDialogRef<ModalCreateDirectoryComponent>) { }
+              private eventService: EventService,
+              public dialogRef: MatDialogRef<ModalCreateDirectoryComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: ObjectModel) { }
 
-  ngOnInit() {
-    this.dataService.getObject()
-      .subscribe(
-        res => this.currentDirectory = res[0],
-        err => this.handlers.handleError(err)
-      );
-  }
+  ngOnInit() {}
 
   onSubmit(createDirectoryForm: NgForm): void {
     if (createDirectoryForm.form.valid) {
-      this.createDirectory(this.currentDirectory['objectId'], this.newDirectory);
+      console.log(this.data);
+      this.createDirectory(this.data['objectId'], this.newDirectory);
     }
   }
 
@@ -38,8 +36,13 @@ export class ModalCreateDirectoryComponent implements OnInit {
     this.dataService.createDirectory(currentDirectory, newDirectory)
       .subscribe(
         res => {
-          this.dialogRef.close({data: res, type: 'create_directory'});
-          this.messageService.success(res.message);
+          if (!res.error) {
+            this.eventService.emitAction({data: res, action: 'create_directory'});
+            this.dialogRef.close();
+            this.messageService.success(res.message);
+          } else {
+            this.messageService.warn(res.message);
+          }
         },
         err => this.handlers.handleError(err)
       );

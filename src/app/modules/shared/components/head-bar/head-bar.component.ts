@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../../../models/user';
 import {UserService} from '../../services/user.service';
 import {HandlersService} from '../../services/handlers.service';
+import {IResponce} from '../../../../models/responce';
 
 @Component({
   selector: 'app-head-bar',
@@ -25,7 +26,11 @@ export class HeadBarComponent implements OnInit {
     if (this.authService.accessToken) {
       this.userService.getUserById(this.authService.accessToken.unique_name)
         .subscribe(
-          (res: any) => this.user = res,
+          (res: IResponce) => {
+            if (res) {
+              this.user = res.data;
+            }
+          },
           (err) => this.handlers.handleError(err)
         );
     }

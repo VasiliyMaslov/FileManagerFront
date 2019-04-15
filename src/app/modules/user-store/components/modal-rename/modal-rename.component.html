@@ -1,0 +1,8 @@
+<form #renameForm="ngForm" (ngSubmit)="onSubmit(renameForm)">
+  <mat-form-field class="w-100">
+    <mat-label>Изменение названия {{placeholderTitle()}}</mat-label>
+    <input matInput type="text" name="objectName" [(ngModel)]="newTitle" required minlength="1"
+           [placeholder]="'Введите название ' + placeholderTitle()">
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit">Сохранить</button>
+</form>

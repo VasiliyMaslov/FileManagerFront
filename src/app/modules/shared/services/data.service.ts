@@ -10,8 +10,13 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  getObject(objectId = '0'): Observable<any> {
-    return this.http.get(Urls.getDirectories, {params: {objId: objectId}});
+  getObject(objectId?): Observable<any> {
+    if (objectId) {
+      const options = {params: {objId: objectId}};
+      return this.http.get(Urls.getDirectories, options);
+    } else {
+      return this.http.get(Urls.getDirectories);
+    }
   }
 
   getAvailableStorage(): Observable<any> {
@@ -31,7 +36,7 @@ export class DataService {
   }
 
   deleteObject(objectId: string): Observable<any> {
-    return this.http.delete(Urls.deleteObject, {params: {objectId: objectId}});
+    return this.http.delete(Urls.deleteObject, {params: {objectId}});
   }
 
   downloadFile(objectId: string): Observable<any> {
@@ -39,6 +44,23 @@ export class DataService {
   }
 
   uploadObject(file: FormData): Observable<any> {
-    return this.http.post(Urls.upload, {file: file});
+    return this.http.post(Urls.upload, file);
+  }
+
+  addPermissions(form: FormData): Observable<any> {
+    return this.http.post(Urls.addPermissions, form);
+  }
+
+  removePermissions(login: string, objectId: string): Observable<any> {
+    const options = {params: {login: login, objectId: objectId}};
+    return this.http.delete(Urls.removePermission, options);
+  }
+
+  allowedUsers(objId): Observable<any> {
+    return this.http.get(Urls.allowedUsers, {params: {objId: objId}});
+  }
+
+  getShared(): Observable<any> {
+    return this.http.get(Urls.sharedObjects);
   }
 }

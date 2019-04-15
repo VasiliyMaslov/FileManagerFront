@@ -51,4 +51,7 @@ export class Urls {
 
   // Информация о использованном и доступном месте в хранилище
   public static checkStorageSize = Urls.catalog + '/storage_size';
+
+  // Расшаренные объекты
+  public static sharedObjects = Urls.catalog + '/shared_objects';
 }

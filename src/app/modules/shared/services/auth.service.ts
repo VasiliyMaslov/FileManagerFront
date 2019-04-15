@@ -30,9 +30,13 @@ export class AuthService {
       .pipe(
         tap(
           (res: any) => {
-            this.handlers.log(`authenticate user id=${user.userId}`);
-            this.user = res;
-            localStorage.setItem('access_token', res.token);
+            if (!res.error) {
+              localStorage.setItem('access_token', res.token);
+              this.handlers.log(`authenticate user id=${user.userId}`);
+              this.user = res;
+            } else {
+              this.message.warn(res.message);
+            }
         }),
         catchError(err => {
           this.handlers.handleError<User>(`authenticate id ${user.userId}`);

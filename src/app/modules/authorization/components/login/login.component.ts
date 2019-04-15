@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
                 this.router.navigate(['auth/login']);
               }
             } else {
-              this.message.warn(res.error);
+              this.message.warn(res.message);
             }
           },
           (err: any) => this.handlers.handleError(err)

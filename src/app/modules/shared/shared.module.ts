@@ -8,11 +8,15 @@ import { MaterialModule } from '../material/material.module';
 import { FormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import {MatFileUploadModule} from 'angular-material-fileupload';
+import { HeadBarComponent } from './components/head-bar/head-bar.component';
+import { TransformBooleanPipe } from './pipes/transform-boolean.pipe';
+import {MAT_DIALOG_DATA} from '@angular/material';
 
 @NgModule({
   declarations: [
-    NotFoundComponent
+    NotFoundComponent,
+    HeadBarComponent,
+    TransformBooleanPipe
   ],
   imports: [
     CommonModule,
@@ -20,18 +24,19 @@ import {MatFileUploadModule} from 'angular-material-fileupload';
     FormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    RouterModule,
-    MatFileUploadModule
+    RouterModule
   ],
   exports: [
     NotFoundComponent,
+    HeadBarComponent,
     FormsModule,
     BrowserAnimationsModule,
     RouterModule,
     MaterialModule,
-    MatFileUploadModule
+    TransformBooleanPipe
   ],
   providers: [
+    {provide: MAT_DIALOG_DATA, useValue: {}},
     UserService,
     HandlersService
   ]

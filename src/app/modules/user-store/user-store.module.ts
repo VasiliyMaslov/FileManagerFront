@@ -7,6 +7,9 @@ import { StorageBarComponent } from './components/storage-bar/storage-bar.compon
 import { ObjectCardComponent } from './components/object-card/object-card.component';
 import { ModalCreateDirectoryComponent } from './components/modal-create-directory/modal-create-directory.component';
 import { ModalUploadFileComponent } from './components/modal-upload-file/modal-upload-file.component';
+import { ModalRenameComponent } from './components/modal-rename/modal-rename.component';
+import { ModalAllowsComponent } from './components/modal-allows/modal-allows.component';
+import { AreasComponent } from './components/areas/areas.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +18,10 @@ import { ModalUploadFileComponent } from './components/modal-upload-file/modal-u
     StorageBarComponent,
     ObjectCardComponent,
     ModalCreateDirectoryComponent,
-    ModalUploadFileComponent
+    ModalUploadFileComponent,
+    ModalRenameComponent,
+    ModalAllowsComponent,
+    AreasComponent
   ],
   imports: [
     SharedModule,
@@ -23,7 +29,9 @@ import { ModalUploadFileComponent } from './components/modal-upload-file/modal-u
   ],
   entryComponents: [
     ModalUploadFileComponent,
-    ModalCreateDirectoryComponent
+    ModalCreateDirectoryComponent,
+    ModalRenameComponent,
+    ModalAllowsComponent
   ]
 })
 export class UserStoreModule { }

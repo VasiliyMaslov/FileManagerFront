@@ -5,6 +5,7 @@ import { User } from '../../../models/user';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HandlersService } from './handlers.service';
+import {IResponce} from '../../../models/responce';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +23,12 @@ export class UserService {
       );
   }
 
-  getUserById(id: number): Observable<User> {
+  getUserById(id: number): Observable<any> {
     const url = Urls.accounts + '/' + id;
-    return this.http.get<User>(url)
+    return this.http.get<any>(url)
       .pipe(
         tap(() => this.handlers.log(`fetched user id=${id}`)),
-        catchError(this.handlers.handleError<User>(`getUserById id=${id}`))
+        catchError(this.handlers.handleError<any>(`getUserById id=${id}`))
       );
   }
 

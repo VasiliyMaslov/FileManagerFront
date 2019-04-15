@@ -1,18 +1,50 @@
-<div class="d-flex justify-content-start border-bottom p-2">
-  <button mat-raised-button [matMenuTriggerFor]="menu" color="primary">
-    <i class="fas fa-plus" style="font-size: 30px"></i>
-    Создать
-  </button>
-  <mat-menu #menu="matMenu">
-   <button mat-menu-item (click)="openCreateDirectoryModal()">
-     <mat-icon><i class="fas fa-folder-plus icons"></i></mat-icon>
-     <span>
-      Создать папку
-     </span>
-   </button>
-    <button mat-menu-item (click)="openUploadFileModal()">
-      <mat-icon><i class="fas fa-upload icons"></i></mat-icon>
-      <span>Загрузить файл</span>
+<div class="d-flex justify-content-start  border-bottom p-2">
+  <div class="d-flex justify-content-start col-2">
+    <button class="d-flex align-items-center justify-content-center" mat-raised-button [matMenuTriggerFor]="menu" color="primary">
+      <i class="fas fa-plus icons"></i>
+      Создать
     </button>
-  </mat-menu>
+    <mat-menu #menu="matMenu">
+     <button mat-menu-item (click)="openCreateDirectoryModal()">
+       <mat-icon><i class="fas fa-folder-plus icons"></i></mat-icon>
+       <span>Создать папку</span>
+     </button>
+      <button mat-menu-item (click)="openUploadFileModal()">
+        <mat-icon><i class="fas fa-upload icons"></i></mat-icon>
+        <span>Загрузить файл</span>
+      </button>
+    </mat-menu>
+  </div>
+  <div class="d-flex col-2 align-items-center">
+    <span>{{area}}</span>
+  </div>
+  <div class="d-flex col-5 justify-content-start align-items-center">
+    <ng-container *ngFor="let object of directoryTree; let last = last">
+      <ng-container *ngIf="object">
+        <div (click)="openDirectory(object)">
+          <span class="cursor-pointer border border-radius-5">{{object.objectName}}</span>
+          <span *ngIf="!last"><i class="fas fa-chevron-right ml-1 mr-1"></i> </span>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="d-flex justify-content-end col-3" *ngIf="selectedObject">
+    <ng-container *ngIf="selectedObject['parent'] === currentUser.userId  || selectedObject['read']">
+      <i class="fas fa-download icons -1 m-2 cursor-pointer" [matTooltip]="'Скачать'"
+         *ngIf="!selectedObject.type"
+         (click)="emitActionStorageBar('download')"></i>
+    </ng-container>
+    <i class="fas fa-edit icons m-2 cursor-pointer" [matTooltip]="'Переименовать'"
+       *ngIf="selectedObject['parent'] === currentUser.userId  || selectedObject['write']"
+       (click)="openRenameModal()"></i>
+    <i class="fas fa-arrow-right icons m-2 cursor-pointer" [matTooltip]="'Переместить'"
+       *ngIf="selectedObject['parent'] === currentUser.userId  || selectedObject['write']"
+       (click)="emitActionStorageBar('move')"></i>
+    <i class="fas fa-trash-alt icons m-2 cursor-pointer" [matTooltip]="'Удалить'"
+       *ngIf="selectedObject['parent'] === currentUser.userId || selectedObject['write']"
+       (click)="emitActionStorageBar('delete')"></i>
+    <i class="fas fa-users icons m-2 cursor-pointer" [matTooltip]="'Управление доступом'"
+       *ngIf="selectedObject['parent'] === currentUser.userId"
+       (click)="openAllowsModal()"></i>
+  </div>
 </div>
