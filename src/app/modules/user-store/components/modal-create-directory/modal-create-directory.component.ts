@@ -27,7 +27,6 @@ export class ModalCreateDirectoryComponent implements OnInit {
 
   onSubmit(createDirectoryForm: NgForm): void {
     if (createDirectoryForm.form.valid) {
-      console.log(this.data);
       this.createDirectory(this.data['objectId'], this.newDirectory);
     }
   }
@@ -37,7 +36,7 @@ export class ModalCreateDirectoryComponent implements OnInit {
       .subscribe(
         res => {
           if (!res.error) {
-            this.eventService.emitAction({data: res, action: 'create_directory'});
+            this.eventService.emitAction({data: res.data, action: 'create_directory'});
             this.dialogRef.close();
             this.messageService.success(res.message);
           } else {

@@ -20,13 +20,10 @@ export class UnauthorizedGuard implements CanActivate  {
       this.router.navigateByUrl('auth/login');
       return false;
     } else {
-      this.userServiсe.getUserById(this.authService.accessToken.unique_name)
-        .subscribe(
-          res => {
-            this.authService.user = res;
-          }, err => this.handlers.handleError(err)
-        );
+        this.authService.currentUser()
+          .subscribe(res => this.authService.user = res.user,
+            err => this.handlers.handleError(err));
+      }
       return true;
     }
-  }
 }

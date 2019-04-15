@@ -28,23 +28,27 @@
       </ng-container>
     </ng-container>
   </div>
-  <div class="d-flex justify-content-end col-3" *ngIf="selectedObject">
-    <ng-container *ngIf="selectedObject['parent'] === currentUser.userId  || selectedObject['read']">
+  <div class="d-flex justify-content-end col-3" *ngIf="selectedObject && !moveMode">
+    <ng-container *ngIf="selectedObject['userId'] === currentUser.userId  || selectedObject['read']">
       <i class="fas fa-download icons -1 m-2 cursor-pointer" [matTooltip]="'Скачать'"
          *ngIf="!selectedObject.type"
          (click)="emitActionStorageBar('download')"></i>
     </ng-container>
     <i class="fas fa-edit icons m-2 cursor-pointer" [matTooltip]="'Переименовать'"
-       *ngIf="selectedObject['parent'] === currentUser.userId  || selectedObject['write']"
+       *ngIf="selectedObject['userId'] === currentUser.userId  || selectedObject['write']"
        (click)="openRenameModal()"></i>
     <i class="fas fa-arrow-right icons m-2 cursor-pointer" [matTooltip]="'Переместить'"
-       *ngIf="selectedObject['parent'] === currentUser.userId  || selectedObject['write']"
-       (click)="emitActionStorageBar('move')"></i>
+       *ngIf="selectedObject['userId'] === currentUser.userId  || selectedObject['write']"
+       (click)="activateMoving()"></i>
     <i class="fas fa-trash-alt icons m-2 cursor-pointer" [matTooltip]="'Удалить'"
-       *ngIf="selectedObject['parent'] === currentUser.userId || selectedObject['write']"
+       *ngIf="selectedObject['userId'] === currentUser.userId || selectedObject['write']"
        (click)="emitActionStorageBar('delete')"></i>
     <i class="fas fa-users icons m-2 cursor-pointer" [matTooltip]="'Управление доступом'"
-       *ngIf="selectedObject['parent'] === currentUser.userId"
+       *ngIf="selectedObject['userId'] === currentUser.userId"
        (click)="openAllowsModal()"></i>
+  </div>
+  <div (click)="moveObject()" class="d-flex justify-content-end col-3" *ngIf="selectedObject && moveMode">
+    <span>Перемещаемый объект: {{movingObject['objectName']}}</span>
+    <i class="fas fa-check"></i>
   </div>
 </div>

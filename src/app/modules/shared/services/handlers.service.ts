@@ -22,6 +22,11 @@ export class HandlersService {
    * @param result - optional value to return as the observable result
    */
   handleError<T>(operation = 'operation', result?: T) {
+
+    if (operation['status'] === 401 || operation['status'] === 403) {
+      localStorage.removeItem('access_token');
+      this.router.navigate(['auth']);
+    }
     return (error: any): Observable<T> => {
 
       // TODO: send the error to remote logging infrastructure
@@ -29,11 +34,6 @@ export class HandlersService {
 
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
-
-      if (error.status === 401 || error.status === 403) {
-        localStorage.removeItem('access_token');
-        this.router.navigate(['auth']);
-      }
 
       // Let the app keep running by returning an empty result.
       return of(result as T);

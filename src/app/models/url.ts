@@ -54,4 +54,7 @@ export class Urls {
 
   // Расшаренные объекты
   public static sharedObjects = Urls.catalog + '/shared_objects';
+
+  // Текущий пользователь
+  public  static currentUser = Urls.catalog + '/this_user';
 }

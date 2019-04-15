@@ -10,6 +10,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { AccessToken } from '../../../models/accessToken';
 import { MessageService } from './message.service';
 import { throwError } from 'rxjs/internal/observable/throwError';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,10 @@ export class AuthService {
               private userService: UserService,
               private helper: JwtHelperService,
               private message: MessageService) {}
+
+  currentUser(): Observable<any> {
+    return this.httpClient.get(Urls.currentUser);
+  }
 
   login(user: User) {
     return this.httpClient.post<User>(Urls.authenticate, user)
@@ -50,8 +55,12 @@ export class AuthService {
     return this.httpClient.post<User>(Urls.register, user)
       .pipe(
         tap((res: any) => {
-          this.handlers.log(`register user id=${user.userId}`);
-          this.login(res);
+          if (!res.error) {
+            this.handlers.log(`register user id=${user.userId}`);
+            this.login(res);
+          } else {
+            this.message.warn(res.message);
+          }
         }),
         catchError(err => {
           this.handlers.handleError<User>(`register id=${user.userId}`);

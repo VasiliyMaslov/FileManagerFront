@@ -1,8 +1,8 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {DataService} from '../../../shared/services/data.service';
 import {HandlersService} from '../../../shared/services/handlers.service';
 import {EventService} from '../../../shared/services/event.service';
-import {MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {MessageService} from '../../../shared/services/message.service';
 
 @Component({
@@ -12,23 +12,25 @@ import {MessageService} from '../../../shared/services/message.service';
 })
 export class ModalUploadFileComponent implements OnInit {
 
-  @Output() action = new EventEmitter<Object>();
   files: FileList;
+  currentDirectory;
 
   constructor(private dataService: DataService,
               private handlers: HandlersService,
               private eventService: EventService,
               private dialogRef: MatDialogRef<ModalUploadFileComponent>,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              @Inject(MAT_DIALOG_DATA) public data) { }
 
   ngOnInit() {
+    this.currentDirectory =  this.data;
   }
 
   onSubmit() {
     if (this.files.length) {
       const files: FileList = this.files;
       const formData = new FormData();
-      formData.append('objId', '51');
+      formData.append('objId', this.currentDirectory['objectId']);
       for (let i = 0; i < files.length; i++) {
         formData.append('file', files[i]);
       }

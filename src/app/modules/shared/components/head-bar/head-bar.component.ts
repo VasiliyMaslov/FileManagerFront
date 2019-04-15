@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../../../models/user';
 import {UserService} from '../../services/user.service';
 import {HandlersService} from '../../services/handlers.service';
-import {IResponce} from '../../../../models/responce';
+import {MessageService} from '../../services/message.service';
 
 @Component({
   selector: 'app-head-bar',
@@ -16,24 +16,22 @@ export class HeadBarComponent implements OnInit {
 
   constructor(public authService: AuthService,
               private userService: UserService,
-              private handlers: HandlersService) { }
+              private handlers: HandlersService,
+              private  messageService: MessageService) { }
 
   ngOnInit() {
     this.getUser();
   }
 
   getUser(): void {
-    if (this.authService.accessToken) {
-      this.userService.getUserById(this.authService.accessToken.unique_name)
-        .subscribe(
-          (res: IResponce) => {
-            if (res) {
-              this.user = res.data;
-            }
-          },
-          (err) => this.handlers.handleError(err)
-        );
-    }
+    this.authService.currentUser()
+      .subscribe(res => {
+        if (!res.error.error) {
+          this.user = res.user;
+        } else {
+          this.messageService.warn(res.message);
+        }
+      },
+        err => this.handlers.handleError(err));
   }
-
 }

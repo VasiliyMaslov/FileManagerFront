@@ -8,9 +8,9 @@ import {HandlersService} from '../../../shared/services/handlers.service';
 import {ModalRenameComponent} from '../modal-rename/modal-rename.component';
 import {ModalAllowsComponent} from '../modal-allows/modal-allows.component';
 import {DataService} from '../../../shared/services/data.service';
-import {UserService} from '../../../shared/services/user.service';
 import {AuthService} from '../../../shared/services/auth.service';
 import {User} from '../../../../models/user';
+import {MessageService} from '../../../shared/services/message.service';
 
 @Component({
   selector: 'app-storage-bar',
@@ -19,6 +19,8 @@ import {User} from '../../../../models/user';
 })
 export class StorageBarComponent implements OnInit {
 
+  moveMode = false;
+  movingObject: Object;
   currentUser: User;
   selectedObject: ObjectModel;
   directoryTree: Array<ObjectModel> = [];
@@ -28,8 +30,8 @@ export class StorageBarComponent implements OnInit {
               private eventService: EventService,
               private handlers: HandlersService,
               private dataService: DataService,
-              public userService: UserService,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private messageService: MessageService) { }
 
   ngOnInit() {
     this.subscribeForActions();
@@ -41,9 +43,11 @@ export class StorageBarComponent implements OnInit {
   }
 
   getCurrentUser() {
-    this.userService.getUserById(this.authService.accessToken.unique_name)
+    this.authService.currentUser()
       .subscribe(
-        res => this.currentUser = res,
+        res => {
+          this.currentUser = res.user;
+          },
         err => this.handlers.handleError(err)
       );
   }
@@ -74,6 +78,7 @@ export class StorageBarComponent implements OnInit {
 
   openUploadFileModal(): void {
     const dialogRef = this.dialog.open(ModalUploadFileComponent, {
+      data: this.currentDirectory(),
       minWidth: '40%'
     });
 
@@ -151,6 +156,8 @@ export class StorageBarComponent implements OnInit {
         } else if (res.data === 'shared') {
           this.area = 'Доступные мне';
         }
+      } else if (res.action === 'move_object') {
+        this.moveObject();
       }
     }
   }
@@ -158,16 +165,75 @@ export class StorageBarComponent implements OnInit {
   downloadFile(objectId: string): void {
     this.dataService.downloadFile(objectId)
       .subscribe(
-        res => this.eventService.emitAction({data: res, action: 'download_file'}),
+        res => {
+          const file = res.file;
+          this.eventService.emitAction({data: {}, action: 'download_file'});
+          const dataType = file.contentType;
+          const binaryData = this.convertBase64ToBlobData(file.fileContents);
+          const downloadLink = document.createElement('a');
+          downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: dataType}));
+          if (file.fileDownloadName) {
+            downloadLink.setAttribute('download', file.fileDownloadName);
+          }
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          downloadLink.parentNode.removeChild(downloadLink);
+        },
         err => this.handlers.handleError(err)
       );
+  }
+
+  convertBase64ToBlobData(base64Data: string, sliceSize = 512) {
+    const byteCharacters = atob(base64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    return byteArrays;
   }
 
   removeObject(objectId: string): void {
     this.dataService.deleteObject(objectId)
       .subscribe(
-        res => this.eventService.emitAction({data: res, action: 'remove_object'}),
+        res => {
+          if (!res.error) {
+            this.eventService.emitAction({data: objectId, action: 'remove_object'});
+            this.messageService.success(res.message);
+          } else {
+            this.messageService.warn(res.message);
+          }
+        },
         err => this.handlers.handleError(err)
+      );
+  }
+
+  activateMoving() {
+    this.moveMode = true;
+    this.movingObject = this.selectedObject;
+  }
+
+  moveObject() {
+    this.dataService.moveObject(this.movingObject['objectId'], this.currentDirectory()['objectId'])
+      .subscribe(
+        res => {
+          if (!res.error) {
+            this.eventService.emitAction({data: res, action: 'move_object'});
+            this.messageService.warn(res.message);
+          } else {
+            this.messageService.warn(res.message);
+          }
+        }
       );
   }
 }

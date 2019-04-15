@@ -18,10 +18,10 @@ export class LoginGuard implements CanActivate  {
     Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     if (this.authService.loggedIn) {
       this.router.navigateByUrl('/store');
-      this.userService.getUserById(this.authService.accessToken.unique_name)
+      this.authService.currentUser()
         .subscribe(
           res => {
-            this.authService.user = res;
+            this.authService.user = res.user;
           }, err => this.handlers.handleError(err)
         );
       return false;
