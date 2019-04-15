@@ -41,7 +41,7 @@ export class ModalAllowsComponent implements OnInit {
         if (!res.error) {
           this.allowedUsers.forEach((usr, i) => {
             if (usr['userID'] === user['userID']) {
-              delete this.allowedUsers[i];
+              this.allowedUsers.splice(i, 1);
             }
           });
           this.messageService.success(res.message);

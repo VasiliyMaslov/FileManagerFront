@@ -78,7 +78,7 @@ export class UserStoreComponent implements OnInit {
       } else if (res.action === 'remove_object') {
         this.childObjects.forEach((object, i) => {
           if (data === object['objectId']) {
-            delete this.childObjects[i];
+            this.childObjects.splice(i, 1);
           }
         });
       } else if (res.action === 'open') {
