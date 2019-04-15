@@ -8,7 +8,7 @@
       </label>
     </div>
   </div>
-  <div class="row">
+  <div class="row mb-2">
     <ng-container *ngFor="let file of files;let i = index">
       <ng-container *ngIf="file">
         <div class="col-12">
@@ -18,5 +18,5 @@
       </ng-container>
     </ng-container>
   </div>
-  <button mat-stroked-button type="submit">Загрузить файлы</button>
+  <button *ngIf="files && files.length" mat-stroked-button type="submit">Загрузить файлы</button>
 </form>
