@@ -85,7 +85,7 @@ export class ModalAllowsComponent implements OnInit {
 
   handleAllowPermissions(res, form): void {
     if (!res.error) {
-      this.allowedUsers.push(res.data);
+      this.allowedUsers.push(res.data[0]);
       form.onReset();
       this.messageService.success(res.message);
     } else {

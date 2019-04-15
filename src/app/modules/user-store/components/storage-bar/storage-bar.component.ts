@@ -57,6 +57,7 @@ export class StorageBarComponent implements OnInit {
   }
 
   openDirectory(object) {
+    this.selectedObject = {};
     this.eventService.emitAction({data: object, action: 'picked_on_tree'});
   }
 
@@ -109,7 +110,6 @@ export class StorageBarComponent implements OnInit {
   }
 
   openAllowsModal(): void {
-    console.log(this.selectedObject);
     const dialogRef = this.dialog.open(ModalAllowsComponent, {
       data: this.selectedObject,
       minWidth: '50%'
@@ -150,6 +150,7 @@ export class StorageBarComponent implements OnInit {
       } else if (res.action === 'delete') {
         this.removeObject(this.selectedObject['objectId']);
       } else if (res.action === 'download') {
+        console.log(res);
         this.downloadFile(this.selectedObject['objectId']);
       } else if (res.action === 'change_area') {
         if (res.data === 'mine') {
@@ -157,7 +158,7 @@ export class StorageBarComponent implements OnInit {
         } else if (res.data === 'shared') {
           this.area = 'Доступные мне';
         }
-      } else if (res.action === 'remove_object' || res.action === 'rename_object') {
+      } else if (res.action === 'remove_object' || res.action === 'rename_object' || res.action === 'open') {
         this.selectedObject = {};
       }
     }
