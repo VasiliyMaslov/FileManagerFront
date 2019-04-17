@@ -12,13 +12,14 @@ import { EventService } from '../../../shared/services/event.service';
 export class ObjectCardComponent implements OnInit {
 
   @Input() object: ObjectModel;
-  @Input() selectedObject: ObjectModel;
+  selectedObject: ObjectModel;
 
   constructor(private dataService: DataService,
               private handlers: HandlersService,
               private eventService: EventService) { }
 
   ngOnInit() {
+    this.subscribeForActions();
   }
 
   onSelectFile() {
@@ -29,6 +30,12 @@ export class ObjectCardComponent implements OnInit {
     if (this.object.type) {
       this.eventService.emitAction({data: this.object, action: 'open'});
     }
+  }
+
+  subscribeForActions() {
+    this.eventService.action
+      .subscribe(res => this.selectedObject = res.data,
+        err => this.handlers.handleError(err));
   }
 
 }

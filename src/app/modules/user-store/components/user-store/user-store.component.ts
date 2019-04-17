@@ -14,7 +14,6 @@ import { HandlersService } from '../../../shared/services/handlers.service';
 export class UserStoreComponent implements OnInit {
 
   childObjects: Array<ObjectModel> = [];
-  selectedObject: ObjectModel;
 
   constructor(private authService: AuthService,
               private dataService: DataService,
@@ -42,16 +41,16 @@ export class UserStoreComponent implements OnInit {
     this.dataService.getShared()
       .subscribe(
         res => {
-        const data = res['data'].sort((a, b) => a['level'] - b['level']);
-        this.eventService.emitAction({data: data[0], action: 'tree_updated'});
-        this.childObjects = data.slice(1, data.length).sort((a, b) => a['type'] - b['type']);
+        const data = res['data'];
+        this.childObjects = data.sort((a, b) => a['type'] - b['type']);
         this.childObjects['shared'] = true;
+        this.eventService.emitAction({data: this.childObjects, action: 'shared_objects'});
       },
         err => this.handlers.handleError(err));
   }
 
   selectObject(object) {
-    this.selectedObject = object;
+    this.eventService.emitAction({data: object, action: 'select'});
   }
 
   subscribeForActions() {

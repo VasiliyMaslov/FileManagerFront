@@ -43,7 +43,6 @@ export class ModalRenameComponent implements OnInit {
 
   renameObject(res): void {
     if (!res.error) {
-      console.log(res);
       this.eventService.emitAction({data: res, action: 'rename_object'});
       this.messageService.success(res.message);
       this.dialogRef.close();

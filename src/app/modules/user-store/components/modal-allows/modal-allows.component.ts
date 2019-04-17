@@ -15,6 +15,7 @@ import { MessageService } from '../../../shared/services/message.service';
 })
 export class ModalAllowsComponent implements OnInit {
 
+  object: ObjectModel;
   objectOwner: Object;
   allowedUsers: Array<Object>;
   user = {
@@ -32,11 +33,12 @@ export class ModalAllowsComponent implements OnInit {
               private messageService: MessageService) { }
 
   ngOnInit() {
+    this.object = this.data;
     this.getAllowedUsers();
   }
 
   removePermissions(user) {
-    this.dataService.removePermissions(user.login, this.data.objectId)
+    this.dataService.removePermissions(user.login, this.object.objectId)
       .subscribe(res => {
         if (!res.error) {
           this.allowedUsers.forEach((usr, i) => {
@@ -53,11 +55,11 @@ export class ModalAllowsComponent implements OnInit {
   }
 
   getAllowedUsers() {
-    this.dataService.allowedUsers(this.data.objectId)
+    this.dataService.allowedUsers(this.object.objectId)
       .subscribe(res => {
         if (!res.error) {
           this.objectOwner = res.data[0];
-          this.allowedUsers = res.data.slice(1, res.data.length - 1);
+          this.allowedUsers = res.data.slice(1, res.data.length);
         } else {
           this.messageService.warn(res.message);
         }
@@ -73,7 +75,7 @@ export class ModalAllowsComponent implements OnInit {
 
   allowPermissions(form): void {
     const formData: FormData = new FormData();
-    formData.append('objectId', this.data.objectId);
+    formData.append('objectId', this.object.objectId);
     formData.append('logins', this.user.login);
     formData.append('write', (this.user.write).toString());
     formData.append('read', (this.user.read).toString());
@@ -85,7 +87,13 @@ export class ModalAllowsComponent implements OnInit {
 
   handleAllowPermissions(res, form): void {
     if (!res.error) {
-      this.allowedUsers.push(res.data[0]);
+        this.allowedUsers.forEach((user, i) => {
+          if (user['id'] === res['id']) {
+            this.allowedUsers[i] = res.data[0];
+          } else {
+            this.allowedUsers.push(res.data[0]);
+          }
+        });
       form.onReset();
       this.messageService.success(res.message);
     } else {

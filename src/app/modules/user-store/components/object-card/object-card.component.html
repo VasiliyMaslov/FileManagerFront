@@ -1,5 +1,5 @@
-<div class="d-flex justify-content-start border border-radius-5 m-2 p-1 cursor-pointer" *ngIf="object"
-     [ngClass]="selectedObject === object ? 'selected-item' : ''" (click)="onSelectFile(object)" (dblclick)="onOpenObject(object)">
+<div class="d-flex justify-content-start border border-radius-5 p-1 cursor-pointer no-select" *ngIf="object"
+     [ngClass]="selectedObject === object ? 'selected-item' : ''" (click)="onSelectFile()" (dblclick)="onOpenObject(object)">
   <i *ngIf="object.type" class="fas fa-folder icon d-flex align-items-center"></i>
   <i *ngIf="!object.type" class="fas fa-file icon d-flex align-items-center"></i>
   <span class="p-2" [ngClass]="!object.type ? 'font-14' : ''">{{object.objectName}}</span>

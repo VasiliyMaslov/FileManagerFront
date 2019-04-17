@@ -1,5 +1,5 @@
 <mat-tab-group mat-align-tabs="center">
-  <mat-tab  label="Просмотр выданных прав на этот объект">
+  <mat-tab *ngIf="object"  label="Просмотр выданных прав на этот объект">
     <div class="mt-2">
       <div *ngIf="objectOwner">
         <span>Владелец объекта: </span>

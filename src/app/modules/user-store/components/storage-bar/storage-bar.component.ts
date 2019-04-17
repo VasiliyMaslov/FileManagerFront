@@ -11,6 +11,7 @@ import {DataService} from '../../../shared/services/data.service';
 import {AuthService} from '../../../shared/services/auth.service';
 import {User} from '../../../../models/user';
 import {MessageService} from '../../../shared/services/message.service';
+import {hasOwnProperty} from 'tslint/lib/utils';
 
 @Component({
   selector: 'app-storage-bar',
@@ -19,12 +20,15 @@ import {MessageService} from '../../../shared/services/message.service';
 })
 export class StorageBarComponent implements OnInit {
 
+  access: boolean;
+  sharedObjects: Array<ObjectModel> = [];
   moveMode = false;
   movingObject: Object;
   currentUser: User;
   selectedObject: ObjectModel;
   directoryTree: Array<ObjectModel> = [];
   area = 'Мой диск';
+  currentDirectory: Object;
 
   constructor(private dialog: MatDialog,
               private eventService: EventService,
@@ -36,10 +40,21 @@ export class StorageBarComponent implements OnInit {
   ngOnInit() {
     this.subscribeForActions();
     this.getCurrentUser();
+    this.checkWriteAccess();
   }
 
-  currentDirectory(): Object {
-    return this.directoryTree[this.directoryTree.length - 1];
+  checkWriteAccess() {
+    if (this.directoryTree) {
+      if (this.currentDirectory && this.directoryTree.length) {
+        if (hasOwnProperty(this.currentDirectory, 'write')) {
+          return !this.currentDirectory['write'];
+        } else {
+          return false;
+        }
+      } else if (!this.directoryTree.length) {
+        return true;
+      }
+    }
   }
 
   getCurrentUser() {
@@ -53,7 +68,7 @@ export class StorageBarComponent implements OnInit {
   }
 
   emitActionStorageBar(action) {
-    this.eventService.emitAction({data: this.currentDirectory(), action: action});
+    this.eventService.emitAction({data: this.currentDirectory, action: action});
   }
 
   openDirectory(object) {
@@ -63,7 +78,7 @@ export class StorageBarComponent implements OnInit {
 
   openCreateDirectoryModal(): void {
     const dialogRef = this.dialog.open(ModalCreateDirectoryComponent, {
-      data: this.currentDirectory(),
+      data: this.currentDirectory,
       minWidth: '50%'
     });
 
@@ -79,7 +94,7 @@ export class StorageBarComponent implements OnInit {
 
   openUploadFileModal(): void {
     const dialogRef = this.dialog.open(ModalUploadFileComponent, {
-      data: this.currentDirectory(),
+      data: this.currentDirectory,
       minWidth: '40%'
     });
 
@@ -112,7 +127,7 @@ export class StorageBarComponent implements OnInit {
   openAllowsModal(): void {
     const dialogRef = this.dialog.open(ModalAllowsComponent, {
       data: this.selectedObject,
-      minWidth: '50%'
+      minWidth: '60%'
     });
 
     dialogRef.afterClosed()
@@ -127,9 +142,7 @@ export class StorageBarComponent implements OnInit {
 
   subscribeForActions() {
     this.eventService.action
-      .subscribe(res => {
-        this.handleAction(res);
-      },
+      .subscribe(res => this.handleAction(res),
         err => this.handlers.handleError(err));
   }
 
@@ -150,9 +163,9 @@ export class StorageBarComponent implements OnInit {
       } else if (res.action === 'delete') {
         this.removeObject(this.selectedObject['objectId']);
       } else if (res.action === 'download') {
-        console.log(res);
         this.downloadFile(this.selectedObject['objectId']);
       } else if (res.action === 'change_area') {
+        this.directoryTree = [];
         if (res.data === 'mine') {
           this.area = 'Мой диск';
         } else if (res.data === 'shared') {
@@ -160,6 +173,11 @@ export class StorageBarComponent implements OnInit {
         }
       } else if (res.action === 'remove_object' || res.action === 'rename_object' || res.action === 'open') {
         this.selectedObject = {};
+        this.currentDirectory = res.data;
+      } else if (res.action === 'shared_objects') {
+        this.sharedObjects = res.data;
+      } else if (res.action === 'shared_tree_updated') {
+        this.directoryTree[0] = res.data;
       }
     }
   }
@@ -226,7 +244,7 @@ export class StorageBarComponent implements OnInit {
   }
 
   moveObject() {
-    this.dataService.moveObject(this.movingObject['objectId'], this.currentDirectory()['objectId'])
+    this.dataService.moveObject(this.movingObject['objectId'], this.currentDirectory['objectId'])
       .subscribe(
         res => {
           if (!res.error) {

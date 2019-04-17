@@ -1,6 +1,7 @@
 <div class="d-flex justify-content-start  border-bottom p-2" style="min-height: 65px;">
   <div class="d-flex justify-content-start col-2">
-    <button class="d-flex align-items-center justify-content-center" mat-raised-button [matMenuTriggerFor]="menu" color="primary">
+    <button [disabled]="checkWriteAccess()"
+            class="d-flex align-items-center justify-content-center" mat-raised-button [matMenuTriggerFor]="menu" color="primary">
       <i class="fas fa-plus icons"></i>
       Создать
     </button>
@@ -23,19 +24,19 @@
       <ng-container *ngIf="object">
         <div (click)="openDirectory(object)">
           <span class="cursor-pointer border border-radius-5">{{object.objectName}}</span>
-          <span *ngIf="!last && directoryTree.length > 1"><i class="fas fa-chevron-right ml-1 mr-1"></i> </span>
+          <span *ngIf="!last && directoryTree.length > 1"><i class="fas fa-chevron-right ml-1 mr-1"></i></span>
         </div>
       </ng-container>
     </ng-container>
   </div>
-  <div class="d-flex justify-content-end col-3" *ngIf="selectedObject && !moveMode">
+  <div class="d-flex justify-content-end col-3" *ngIf="selectedObject && currentUser && !moveMode">
     <ng-container *ngIf="selectedObject['userId'] === currentUser.userId  || selectedObject['read']">
       <i class="fas fa-download icons -1 m-2 cursor-pointer" [matTooltip]="'Скачать'"
          *ngIf="!selectedObject.type"
          (click)="emitActionStorageBar('download')"></i>
     </ng-container>
     <i class="fas fa-edit icons m-2 cursor-pointer" [matTooltip]="'Переименовать'"
-       *ngIf="selectedObject['userId'] === currentUser.userId  || selectedObject['write']"
+       *ngIf="selectedObject['userId'] === currentUser.userId || selectedObject['write']"
        (click)="openRenameModal()"></i>
     <i class="fas fa-arrow-right icons m-2 cursor-pointer" [matTooltip]="'Переместить'"
        *ngIf="selectedObject['userId'] === currentUser.userId  || selectedObject['write']"
@@ -47,12 +48,12 @@
        *ngIf="selectedObject['userId'] === currentUser.userId"
        (click)="openAllowsModal()"></i>
   </div>
-  <div class="d-flex justify-content-end col-3" *ngIf="selectedObject && moveMode">
-    <div class="col-8">
-      <span>Перемещаемый объект: {{movingObject['objectName']}}</span>
-      <i (click)="moveObject()" class="col-2 fas fa-check icons d-flex align-items-center cursor-pointer" [matTooltip]="'Подтвердить перемещение'"></i>
+  <div class="d-flex col-3 flex-column" *ngIf="selectedObject && moveMode">
+    <span class="w-100 text-center">Перемещаемый объект: {{movingObject['objectName']}}</span>
+    <div class="row">
+      <i (click)="moveObject()" class="w-50 text-center fas fa-check icons cursor-pointer" [matTooltip]="'Подтвердить перемещение'"></i>
+      <i class="w-50 fas fa-times icons text-center cursor-pointer" [matTooltip]="'Отменить перемещение'"
+         (click)="cancelMove()"></i>
     </div>
-    <i class="col-2 fas fa-times icons d-flex align-items-center cursor-pointer" [matTooltip]="'Отменить перемещение'"
-       (click)="cancelMove()"></i>
   </div>
 </div>
