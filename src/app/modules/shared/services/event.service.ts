@@ -6,7 +6,7 @@ import {IAction} from '../../../models/action';
 })
 export class EventService {
 
-  currentDirectory: Object;
+  currentDirectory = new EventEmitter<Object>();
   action = new EventEmitter<Object>();
 
   constructor() {}
@@ -14,7 +14,7 @@ export class EventService {
   emitAction(action: IAction) {
     this.action.emit(action);
     if (action.action === 'open' || action.action === 'picked_on_tree') {
-      this.currentDirectory = action.data;
+      this.currentDirectory.emit(action.data);
     }
   }
 }

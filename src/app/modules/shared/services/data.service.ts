@@ -61,7 +61,7 @@ export class DataService {
     return this.http.get(Urls.allowedUsers, {params: {objId: objId}});
   }
 
-  getShared(): Observable<any> {
-    return this.http.get(Urls.sharedObjects);
+  getShared(objId = '0'): Observable<any> {
+    return this.http.get(Urls.sharedObjects, {params: {objId: objId}});
   }
 }

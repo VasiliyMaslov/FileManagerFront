@@ -11,7 +11,6 @@ import {DataService} from '../../../shared/services/data.service';
 import {AuthService} from '../../../shared/services/auth.service';
 import {User} from '../../../../models/user';
 import {MessageService} from '../../../shared/services/message.service';
-import {hasOwnProperty} from 'tslint/lib/utils';
 
 @Component({
   selector: 'app-storage-bar',
@@ -21,7 +20,6 @@ import {hasOwnProperty} from 'tslint/lib/utils';
 export class StorageBarComponent implements OnInit {
 
   access: boolean;
-  sharedObjects: Array<ObjectModel> = [];
   moveMode = false;
   movingObject: Object;
   currentUser: User;
@@ -41,20 +39,10 @@ export class StorageBarComponent implements OnInit {
     this.subscribeForActions();
     this.getCurrentUser();
     this.checkWriteAccess();
+    this.getCurrentDirectory();
   }
 
   checkWriteAccess() {
-    if (this.directoryTree) {
-      if (this.currentDirectory && this.directoryTree.length) {
-        if (hasOwnProperty(this.currentDirectory, 'write')) {
-          return !this.currentDirectory['write'];
-        } else {
-          return false;
-        }
-      } else if (!this.directoryTree.length) {
-        return true;
-      }
-    }
   }
 
   getCurrentUser() {
@@ -65,6 +53,11 @@ export class StorageBarComponent implements OnInit {
           },
         err => this.handlers.handleError(err)
       );
+  }
+
+  getCurrentDirectory(): void {
+    this.eventService.currentDirectory
+      .subscribe(res => this.currentDirectory = res['data']);
   }
 
   emitActionStorageBar(action) {
@@ -174,8 +167,6 @@ export class StorageBarComponent implements OnInit {
       } else if (res.action === 'remove_object' || res.action === 'rename_object' || res.action === 'open') {
         this.selectedObject = {};
         this.currentDirectory = res.data;
-      } else if (res.action === 'shared_objects') {
-        this.sharedObjects = res.data;
       } else if (res.action === 'shared_tree_updated') {
         this.directoryTree[0] = res.data;
       }

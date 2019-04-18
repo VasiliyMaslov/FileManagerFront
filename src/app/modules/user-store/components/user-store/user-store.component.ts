@@ -14,6 +14,7 @@ import { HandlersService } from '../../../shared/services/handlers.service';
 export class UserStoreComponent implements OnInit {
 
   childObjects: Array<ObjectModel> = [];
+  currentDirectory: Object;
 
   constructor(private authService: AuthService,
               private dataService: DataService,
@@ -23,6 +24,7 @@ export class UserStoreComponent implements OnInit {
   ngOnInit() {
     this.getObjects();
     this.subscribeForActions();
+    this.getCurrentDirectory()
   }
 
   getObjects(objectId?) {
@@ -32,6 +34,7 @@ export class UserStoreComponent implements OnInit {
           const data: Array<Object> = res['data'].sort((a, b) => a['level'] - b['level']);
           this.eventService.emitAction({data: data[0], action: 'tree_updated'});
           this.childObjects = data.slice(1, data.length).sort((a, b) => a['type'] - b['type']);
+          this.eventService.currentDirectory.emit({data: data[0], action: 'current_directory'});
         },
         err => this.handlers.handleError(err)
       );
@@ -45,8 +48,14 @@ export class UserStoreComponent implements OnInit {
         this.childObjects = data.sort((a, b) => a['type'] - b['type']);
         this.childObjects['shared'] = true;
         this.eventService.emitAction({data: this.childObjects, action: 'shared_objects'});
+        this.eventService.currentDirectory.emit({data: data[0], action: 'current_directory'});
       },
         err => this.handlers.handleError(err));
+  }
+
+  getCurrentDirectory(): void {
+    this.eventService.currentDirectory
+      .subscribe(res => this.currentDirectory = res);
   }
 
   selectObject(object) {
