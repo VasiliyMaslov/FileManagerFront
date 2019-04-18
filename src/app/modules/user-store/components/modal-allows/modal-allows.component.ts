@@ -17,7 +17,7 @@ export class ModalAllowsComponent implements OnInit {
 
   object: ObjectModel;
   objectOwner: Object;
-  allowedUsers: Array<Object>;
+  allowedUsers: Array<Object> = [];
   user = {
     login: '',
     write: false,
@@ -87,11 +87,12 @@ export class ModalAllowsComponent implements OnInit {
   }
 
   handleAllowPermissions(res, form): void {
-    console.log(res);
     if (!res.error) {
+      if (!this.allowedUsers.length) {
+        this.allowedUsers.push(res.data[0]);
+      }
         this.allowedUsers.forEach((user, i) => {
-          console.log(user);
-          if (user['login'] === res['data'][0]['login']) {
+          if (user && user['login'] === res['data'][0]['login']) {
             this.allowedUsers[i] = res.data[0];
           } else {
             this.allowedUsers.push(res.data[0]);

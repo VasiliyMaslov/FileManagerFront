@@ -15,6 +15,7 @@ export class UserStoreComponent implements OnInit {
 
   childObjects: Array<ObjectModel> = [];
   currentDirectory: Object;
+  currentArea: string;
 
   constructor(private authService: AuthService,
               private dataService: DataService,
@@ -24,7 +25,21 @@ export class UserStoreComponent implements OnInit {
   ngOnInit() {
     this.getObjects();
     this.subscribeForActions();
-    this.getCurrentDirectory()
+    this.getCurrentDirectory();
+    this.getCurrentArea();
+  }
+
+  getCurrentArea(): void {
+    this.eventService.currentArea
+      .subscribe(res => this.currentArea = res);
+  }
+
+  getData(objectId?) {
+    if (this.currentArea === 'mine') {
+      this.getObjects(objectId);
+    } else if (this.currentArea === 'shared') {
+      this.getShared(objectId);
+    }
   }
 
   getObjects(objectId?) {
@@ -40,8 +55,8 @@ export class UserStoreComponent implements OnInit {
       );
   }
 
-  getShared() {
-    this.dataService.getShared()
+  getShared(objectId?) {
+    this.dataService.getShared(objectId)
       .subscribe(
         res => {
         const data = res['data'];
@@ -90,16 +105,10 @@ export class UserStoreComponent implements OnInit {
             this.childObjects.splice(i, 1);
           }
         });
-      } else if (res.action === 'open') {
-        this.getObjects(data['objectId']);
-      } else if (res.action === 'picked_on_tree') {
-        this.getObjects(data['objectId']);
+      } else if (res.action === 'open' || res.action === 'picked_on_tree') {
+        this.getData(data['objectId']);
       } else if (res.action === 'change_area') {
-        if (res.data === 'mine') {
-          this.getObjects();
-        } else if (res.data === 'shared') {
-          this.getShared();
-        }
+        this.getData();
       } else if (res.action === 'move_object') {
         this.childObjects.push(res.data['relocated_objects'][0]);
       }

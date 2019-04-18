@@ -32,8 +32,10 @@ export class RegistrationComponent implements OnInit {
             (res: any) => {
               if (!res.error) {
                 this.router.navigate(['store']);
+                this.message.success(res.message);
+
               } else {
-                this.message.warn(res.error);
+                this.message.warn(res.message);
               }
             },
             (err: any) => this.handlers.handleError('register')
