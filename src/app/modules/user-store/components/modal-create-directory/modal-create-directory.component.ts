@@ -23,7 +23,8 @@ export class ModalCreateDirectoryComponent implements OnInit {
               public dialogRef: MatDialogRef<ModalCreateDirectoryComponent>,
               @Inject(MAT_DIALOG_DATA) public data: ObjectModel) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   onSubmit(createDirectoryForm: NgForm): void {
     if (createDirectoryForm.form.valid) {

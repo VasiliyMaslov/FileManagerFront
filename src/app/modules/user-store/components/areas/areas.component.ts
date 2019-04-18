@@ -14,6 +14,9 @@ export class AreasComponent implements OnInit {
   }
 
   chooseArea(area: string) {
+    if (area === 'shared') {
+      this.eventService.currentDirectory.emit({objectName: 'Общий каталог'});
+    }
     this.eventService.currentArea.emit(area);
   }
 

@@ -14,7 +14,7 @@ export class EventService {
 
   emitAction(action: IAction) {
     this.action.emit(action);
-    if (action.action === 'open' || action.action === 'picked_on_tree') {
+    if (action.action === 'open' || action.action === 'picked_on_tree' || action.action === 'tree_updated') {
       this.currentDirectory.emit(action.data);
     }
   }

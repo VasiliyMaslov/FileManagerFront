@@ -57,7 +57,6 @@ export class ModalAllowsComponent implements OnInit {
   getAllowedUsers() {
     this.dataService.allowedUsers(this.object.objectId)
       .subscribe(res => {
-        console.log(res);
         if (!res.error) {
           this.objectOwner = res.parent;
           this.allowedUsers = res.childs;

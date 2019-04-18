@@ -6,8 +6,10 @@
   </div>
   <div class="d-flex p-2 row col-9 justify-content-start">
     <ng-container *ngFor="let object of childObjects">
-      <app-object-card (click)="selectObject(object)" class="col-sm-12 col-md-6 col-xl-4 mt-2 mb-2 fit-height fit-width"
-                       [object]="object"></app-object-card>
+      <ng-container *ngIf="currentUser && currentUser['userId'] === object['userId'] || object['read']">
+        <app-object-card (click)="selectObject(object)" class="col-sm-12 col-md-6 col-xl-4 mt-2 mb-2 fit-height fit-width"
+                         [object]="object"></app-object-card>
+      </ng-container>
     </ng-container>
   </div>
 </div>

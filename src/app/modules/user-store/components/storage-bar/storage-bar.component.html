@@ -20,7 +20,7 @@
     <span>{{area}}</span>
   </div>
   <div class="d-flex col-5 justify-content-start align-items-center">
-    <ng-container *ngFor="let object of directoryTree; let last = last">
+    <ng-container *ngFor="let object of directoryTree; let last = last; let ind = index">
       <ng-container *ngIf="object">
         <div (click)="openDirectory(object)">
           <span class="cursor-pointer border border-radius-5">{{object.objectName}}</span>

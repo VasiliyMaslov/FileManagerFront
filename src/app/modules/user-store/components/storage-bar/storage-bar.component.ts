@@ -36,13 +36,16 @@ export class StorageBarComponent implements OnInit {
               private messageService: MessageService) { }
 
   ngOnInit() {
+    this.getCurrentDirectory();
     this.subscribeForActions();
     this.getCurrentUser();
     this.checkWriteAccess();
-    this.getCurrentDirectory();
   }
 
   checkWriteAccess() {
+    if (this.area === 'Доступные мне') {
+      return !this.currentDirectory['write'];
+    }
   }
 
   getCurrentUser() {
@@ -57,7 +60,9 @@ export class StorageBarComponent implements OnInit {
 
   getCurrentDirectory(): void {
     this.eventService.currentDirectory
-      .subscribe(res => this.currentDirectory = res['data']);
+      .subscribe(res => {
+        this.currentDirectory = res;
+      });
   }
 
   emitActionStorageBar(action) {
@@ -74,15 +79,6 @@ export class StorageBarComponent implements OnInit {
       data: this.currentDirectory,
       minWidth: '50%'
     });
-
-    dialogRef.afterClosed()
-      .subscribe(
-        res => {
-          if (res) {
-            this.eventService.emitAction(res);
-          }
-        }
-      );
   }
 
   openUploadFileModal(): void {
@@ -143,7 +139,9 @@ export class StorageBarComponent implements OnInit {
     if (res) {
       const object: ObjectModel = res.data;
       if (res.action === 'select') {
-        this.selectedObject = object;
+        if (!this.moveMode) {
+          this.selectedObject = object;
+        }
       } else if (res.action === 'tree_updated') {
         if (res.data) {
           this.directoryTree.forEach((o, i) => {
@@ -167,8 +165,6 @@ export class StorageBarComponent implements OnInit {
       } else if (res.action === 'remove_object' || res.action === 'rename_object' || res.action === 'open') {
         this.selectedObject = {};
         this.currentDirectory = res.data;
-      } else if (res.action === 'shared_tree_updated') {
-        this.directoryTree[0] = res.data;
       }
     }
   }
@@ -235,6 +231,7 @@ export class StorageBarComponent implements OnInit {
   }
 
   moveObject() {
+    console.log(this.movingObject);
     this.dataService.moveObject(this.movingObject['objectId'], this.currentDirectory['objectId'])
       .subscribe(
         res => {
@@ -246,7 +243,8 @@ export class StorageBarComponent implements OnInit {
           } else {
             this.messageService.warn(res.message);
           }
-        }
+        },
+        err => this.handlers.handleError(err)
       );
   }
 

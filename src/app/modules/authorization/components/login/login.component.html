@@ -5,8 +5,7 @@
       <input matInput name="login" [(ngModel)]="user.login" placeholder="Логин" required>
     </mat-form-field>
     <mat-form-field class="col-12">
-      <input matInput name="password" type="password" [(ngModel)]="user.password" placeholder="Пароль" required minlength="5">
-      <mat-error>Пароль должен содержать не менее 5 символов</mat-error>
+      <input matInput name="password" type="password" [(ngModel)]="user.password" placeholder="Пароль" required>
     </mat-form-field>
   </div>
   <button mat-raised-button color="primary" class="mt-3 w-100" type="submit">Войти</button>
