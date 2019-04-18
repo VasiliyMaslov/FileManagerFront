@@ -15,7 +15,7 @@ export class UserStoreComponent implements OnInit {
 
   childObjects: Array<ObjectModel> = [];
   currentDirectory: Object;
-  currentArea: string;
+  currentArea = 'mine';
 
   constructor(private authService: AuthService,
               private dataService: DataService,
@@ -31,7 +31,10 @@ export class UserStoreComponent implements OnInit {
 
   getCurrentArea(): void {
     this.eventService.currentArea
-      .subscribe(res => this.currentArea = res);
+      .subscribe(res => {
+        this.currentArea = res;
+        this.eventService.emitAction({data: res, action: 'change_area'});
+      });
   }
 
   getData(objectId?) {

@@ -17,8 +17,5 @@ export class EventService {
     if (action.action === 'open' || action.action === 'picked_on_tree') {
       this.currentDirectory.emit(action.data);
     }
-    if (action.action === 'change_area') {
-      this.currentArea.emit(action.data);
-    }
   }
 }

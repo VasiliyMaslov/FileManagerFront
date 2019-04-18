@@ -14,7 +14,7 @@ export class AreasComponent implements OnInit {
   }
 
   chooseArea(area: string) {
-    this.eventService.emitAction({data: area, action: 'change_area'});
+    this.eventService.currentArea.emit(area);
   }
 
 }
